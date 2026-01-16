@@ -109,7 +109,6 @@ Visit `http://localhost:3000` to see TipTune in action!
 ```
 # TipTune Project Structure
 
-```
 tiptune/
 ├── frontend/                           # React + TypeScript + Vite
 │   ├── public/

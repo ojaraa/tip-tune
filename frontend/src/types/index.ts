@@ -19,23 +19,30 @@ export interface PaginatedResponse<T> {
 
 // Track types
 export interface Track {
-  id: string;
+  // id: string;
+  id: number;
+//   title: string;
+  artist: string;
   title: string;
+  coverArt: string;
+  plays: number;
   artistId?: string;
-  artist?: ArtistSummary;
-  filename: string;
-  url: string;
-  streamingUrl: string;
-  fileSize: bigint;
-  mimeType: string;
+  tips: number;
+
+  // artist?: ArtistSummary;
+  filename?: string;
+  url?: string;
+  streamingUrl?: string;
+  fileSize?: bigint;
+  mimeType?: string;
   duration?: number;
-  isPublic: boolean;
+  isPublic?: boolean;
   description?: string;
   genre?: string;
   album?: string;
-  playCount: number;
-  createdAt: string;
-  updatedAt: string;
+  playCount? : number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Tip types
@@ -46,17 +53,28 @@ export enum TipStatus {
 }
 
 export interface Tip {
-  id: string;
-  fromUserId: string;
-  toArtistId: string;
-  trackId?: string;
-  amount: number;
-  usdValue: number;
-  stellarTxHash: string;
-  status: TipStatus;
-  message?: string;
-  createdAt: string;
-}
+    id: string;
+    tipperName: string;
+    tipperAvatar: string;
+    amount: number;
+    message: string;
+    timestamp: Date;
+    trackId?: number;
+  }
+  
+
+// export interface Tip {
+//   id: string;
+//   fromUserId: string;
+//   toArtistId: string;
+//   trackId?: string;
+//   amount: number;
+//   usdValue: number;
+//   stellarTxHash: string;
+//   status: TipStatus;
+//   message?: string;
+//   createdAt: string;
+// }
 
 // User types
 export interface User {
@@ -70,11 +88,17 @@ export interface User {
 // Artist types
 export interface Artist {
   id: string;
+  userId: string;
   walletAddress: string;
-  name: string;
+  artistName: string;
+  genre?: string;
   bio?: string;
-  avatarUrl?: string;
+  profileImage?: string;
+  coverImage?: string;
+  totalTipsReceived?: string;
+  emailNotifications?: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface ArtistSummary {
@@ -190,4 +214,37 @@ export interface ActivityFeedResponse {
     hasPreviousPage: boolean;
     unseenCount: number;
   };
+}
+
+// FIX: Import React to resolve 'React' namespace error.
+import React from 'react';
+
+export interface StatCardData {
+  title: string;
+  value: string;
+  change?: string;
+  changeType?: 'increase' | 'decrease';
+  icon: React.ReactNode;
+}
+
+export interface ChartDataPoint {
+  date: string;
+  tips: number;
+}
+
+// export interface Track {
+//   id: number;
+//   title: string;
+//   artist: string;
+//   coverArt: string;
+//   plays: number;
+//   tips: number;
+// }
+
+
+export interface UserProfile {
+  name: string;
+  bio: string;
+  avatar: string;
+  walletAddress: string;
 }

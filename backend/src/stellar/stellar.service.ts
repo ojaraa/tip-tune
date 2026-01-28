@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as StellarSdk from '@stellar/stellar-sdk';
+import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import * as StellarSdk from "@stellar/stellar-sdk";
 
 @Injectable()
 export class StellarService {
@@ -8,11 +8,14 @@ export class StellarService {
   private readonly logger = new Logger(StellarService.name);
 
   constructor(private configService: ConfigService) {
-    const network = this.configService.get<string>('STELLAR_NETWORK', 'testnet');
+    const network = this.configService.get<string>(
+      "STELLAR_NETWORK",
+      "testnet",
+    );
     const horizonUrl =
-      network === 'mainnet'
-        ? 'https://horizon.stellar.org'
-        : 'https://horizon-testnet.stellar.org';
+      network === "mainnet"
+        ? "https://horizon.stellar.org"
+        : "https://horizon-testnet.stellar.org";
 
     this.server = new StellarSdk.Horizon.Server(horizonUrl);
   }
@@ -35,14 +38,14 @@ export class StellarService {
 
       // We need to inspect operations to ensure the correct amount was sent to the correct recipient
       const operations = await tx.operations();
-      
+
       const paymentOp = operations.records.find(
         (op) =>
-          op.type === 'payment' &&
+          op.type === "payment" &&
           op.to === recipientId &&
-          op.amount === amount, // Note: exact string match. 
-          // Better to use a BigNumber library or StellarSdk's handling if precision is key, 
-          // but for now string comparison matches API.
+          op.amount === amount, // Note: exact string match.
+        // Better to use a BigNumber library or StellarSdk's handling if precision is key,
+        // but for now string comparison matches API.
       );
 
       if (!paymentOp) {
@@ -54,7 +57,9 @@ export class StellarService {
 
       return true;
     } catch (error) {
-      this.logger.error(`Error verifying transaction ${txHash}: ${error.message}`);
+      this.logger.error(
+        `Error verifying transaction ${txHash}: ${error.message}`,
+      );
       return false;
     }
   }
@@ -64,8 +69,42 @@ export class StellarService {
       const tx = await this.server.transactions().transaction(txHash).call();
       return tx;
     } catch (error) {
-      this.logger.error(`Error fetching transaction ${txHash}: ${error.message}`);
+      this.logger.error(
+        `Error fetching transaction ${txHash}: ${error.message}`,
+      );
       throw error;
     }
+  }
+
+  async mintBadge(userId: string, badge: any): Promise<string | null> {
+    this.logger.log(`Minting badge ${badge.name} for user ${userId} (MOCKED)`);
+    // In a real implementation:
+    // 1. Check if user has trustline for asset (badge.nftAssetCode)
+    // 2. Build transaction from Issuer account to User account
+    // 3. Sign and submit
+
+    // For now, return a mock hash if enabled
+    if (process.env.ENABLE_NFT_MINTING === "true") {
+      return "mock_tx_hash_" + Date.now();
+    }
+    return null;
+  }
+
+  async sendMultiRecipientPayment(
+    recipients: Array<{ destination: string; amount: string }>,
+    sourceTransactionRef?: string,
+  ): Promise<string> {
+    this.logger.log(
+      `Sending multi-recipient payment to ${recipients.length} recipients (MOCKED)`,
+    );
+    // In a real implementation:
+    // 1. Get the source account (issuer account)
+    // 2. Build a transaction with multiple payment operations
+    // 3. Sign the transaction
+    // 4. Submit to the network
+    // 5. Return the transaction hash
+
+    // For now, return a mock hash
+    return "mock_multi_payment_" + Date.now();
   }
 }
